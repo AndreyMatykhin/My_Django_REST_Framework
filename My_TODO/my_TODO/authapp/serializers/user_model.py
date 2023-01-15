@@ -5,7 +5,7 @@ from authapp.models.custom_user import CustomUser
 class CustomUserModelSerializer(HyperlinkedModelSerializer):
     class Meta:
         model = CustomUser
-        fields = ['id',
+        fields = ['url',
                   'username',
                   'first_name',
                   'last_name',

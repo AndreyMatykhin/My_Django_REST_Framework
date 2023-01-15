@@ -3,6 +3,6 @@ from authapp.models import CustomUser
 from authapp.serializers import CustomUserModelSerializer
 
 
-class CustomUserModelViewSet(ModelViewSet):
+class CustomUserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserModelSerializer
