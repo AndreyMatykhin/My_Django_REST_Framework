@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'authapp',
     'corsheaders',
     'mainapp',
+    'django_filters',
 ]
 AUTH_USER_MODEL = "authapp.CustomUser"
 
@@ -126,3 +127,9 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
 ]
 MEDIA_ROOT = 'project_storage/'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 100,
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend',],
+}
