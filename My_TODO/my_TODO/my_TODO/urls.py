@@ -16,18 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from authapp.views import CustomUserViewSet
+from authapp.views import CustomUserViewSet, UserViewSet
 from mainapp.views import ProjectViewSet, TODOViewSet
 
 router = DefaultRouter()
 router.register('authapp', CustomUserViewSet)
 router.register('project', ProjectViewSet)
-router.register('TODO',TODOViewSet)
-
+router.register('TODO', TODOViewSet)
+router.register('users', UserViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api-authapp/', include('rest_framework.urls')),
-    path('api/', include(router.urls)),
+    path('', include(router.urls)),
 ]

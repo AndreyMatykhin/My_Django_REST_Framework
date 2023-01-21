@@ -1,4 +1,4 @@
-from rest_framework.serializers import HyperlinkedModelSerializer
+from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
 from authapp.models.custom_user import CustomUser
 
 
@@ -14,3 +14,9 @@ class CustomUserModelSerializer(HyperlinkedModelSerializer):
                   'is_active',
                   'date_joined',
                   ]
+
+
+class CustomUserSerializer(ModelSerializer):
+    class Meta:
+        model = CustomUser
+        fields = '__all__'
