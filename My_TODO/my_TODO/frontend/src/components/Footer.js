@@ -1,4 +1,5 @@
 import React from 'react'
+import {Link} from 'react-router-dom'
 
 const Footer = () => {
     return (
@@ -10,21 +11,8 @@ const Footer = () => {
                     </p>
                     <p>
                         <ul class="list-unstyled">
-                            <li><a href="{% url 'mainapp:main_page' %}">Домашняя</a></li>
+                            <li><Link to='/'>Домашняя</Link></li>
                             <li><a href="{% url 'authapp:logout' %}">Выйти или Войти</a></li>
-                        </ul>
-                    </p>
-                </div>
-                <div class="col-sm-6 col-md-3 text-center">
-                    <p>
-                        <strong>Полезное</strong>
-                    </p>
-                    <p>
-                        <ul class="list-unstyled">
-                            <li><a href="#">Положения &amp; Условия</a></li>
-                            <li><a href="#">Конфиденциальность &amp; Cookies</a></li>
-                            <li><a href="#">Документация по API</a></li>
-                            <li><a href="#">Документация по сайту</a></li>
                         </ul>
                     </p>
                 </div>

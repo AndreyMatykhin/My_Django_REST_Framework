@@ -23,7 +23,7 @@ router = DefaultRouter()
 router.register('authapp', CustomUserViewSet)
 router.register('project', ProjectViewSet)
 router.register('TODO', TODOViewSet)
-router.register('users', UserViewSet)
+router.register('users', UserViewSet, basename="users")
 
 urlpatterns = [
     path('admin/', admin.site.urls),
