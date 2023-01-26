@@ -6,8 +6,6 @@ from authapp import models as mainapp_models
 class CustomUserAdmin(admin.ModelAdmin):
     list_display = ['id',
                     'username',
-                    'first_name',
-                    'last_name',
                     'email',
                     'user_category',
                     'is_active',
