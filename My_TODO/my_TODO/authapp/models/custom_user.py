@@ -1,13 +1,11 @@
 from django.db import models
 from uuid import uuid4
-from django.contrib.auth.base_user import AbstractBaseUser
-from django.contrib.auth.models import PermissionsMixin, UserManager
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.contrib.auth.validators import ASCIIUsernameValidator
-from django.core.mail import send_mail
 from django.utils.translation import gettext_lazy as _
 
 
-class CustomUser(AbstractBaseUser, PermissionsMixin):
+class CustomUser(AbstractUser):
     username_validator = ASCIIUsernameValidator()
 
     class UserCategory(models.TextChoices):
@@ -46,12 +44,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     date_joined = models.DateTimeField(_("date joined"), auto_now_add=True)
 
     objects = UserManager()
-    EMAIL_FIELD = "email"
-    USERNAME_FIELD = "username"
-    REQUIRED_FIELDS = ["email", "password"]
-
-    def email_user(self, subject, message, from_email=None, **kwargs):
-        send_mail(subject, message, from_email, [self.email], **kwargs)
 
     def is_upperclass(self):
         return self.user_category in {self.UserCategory.ADMINISTRATOR, self.UserCategory.MANAGER, }
+
+    # def _do_update(self, base_qs, using, pk_val, values, update_fields, forced_update):

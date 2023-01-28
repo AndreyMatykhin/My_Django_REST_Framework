@@ -1,10 +1,8 @@
-from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer, CharField
+from rest_framework.serializers import HyperlinkedModelSerializer, ModelSerializer
 from authapp.models.custom_user import CustomUser
 
 
 class CustomUserModelSerializer(HyperlinkedModelSerializer):
-    password = CharField(write_only=True)
-
     class Meta:
         model = CustomUser
         fields = ['url',
@@ -17,13 +15,25 @@ class CustomUserModelSerializer(HyperlinkedModelSerializer):
                   ]
 
     def create(self, validated_data):
-        user = super(CustomUserModelSerializer, self).create(validated_data)
-        user.set_password(validated_data['password'])
-        user.save()
-        return user
+        return CustomUser.objects.create_user(**validated_data)
+
+    def update(self, instance, validated_data):
+        super().update(instance, validated_data)
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
 
 
 class CustomUserSerializer(ModelSerializer):
-     class Meta:
+    class Meta:
         model = CustomUser
         fields = '__all__'
+
+    def create(self, validated_data):
+        return CustomUser.objects.create_user(**validated_data)
+
+    def update(self, instance, validated_data):
+        super().update(instance, validated_data)
+        instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
