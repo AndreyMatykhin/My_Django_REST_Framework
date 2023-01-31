@@ -36,6 +36,13 @@ class App extends React.Component {
                     this.setState({'TODOs': response.data})
                     }).catch(error => console.log(error))
     }
+
+    get_token(username, password) {
+        axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password})
+            .then(response => {console.log(response.data)})
+            .catch(error => alert('Неверный логин или пароль'))
+    }
+
     componentDidMount() {
         this.load_data()
     }
@@ -57,7 +64,8 @@ class App extends React.Component {
                         <Route exact path='/TODO' component={()=> <TODOsList TODOs={this.state.TODOs} /> }/>
                         <Route path='/TODO/:project' component={()=> <TODOsProjectList TODOs={this.state.TODOs} /> }/>
                         <Route exact path='/' component={()=>(<h1>Выберите пункт Меню</h1>)}/>
-                        <Route exact path='/login' component={() => <LoginForm />} />
+                        <Route exact path='/login' component={() => <LoginForm get_token={(username, password) =>
+                                                                        this.get_token(username, password)} />} />
                         <Route component={NotFound404} />
                     </Switch>
                     <div class="col-sm-6 col-md-3 text-center">
