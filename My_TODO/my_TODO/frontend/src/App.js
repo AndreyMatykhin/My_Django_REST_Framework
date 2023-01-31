@@ -6,6 +6,7 @@ import TODOsProjectList from './components/TODOsProject.js'
 import LoginForm from './components/Auth.js'
 import {BrowserRouter, Switch, Route, Link} from 'react-router-dom'
 import axios from 'axios'
+import Cookies from 'universal-cookie';
 
 const NotFound404 = ({ location }) => {
     return (
@@ -21,8 +22,29 @@ class App extends React.Component {
         this.state = {
             'users': [],
             'projects':[],
-            'TODOs':[]
+            'TODOs':[],
+            'token':''
         }
+    }
+
+    set_token(token) {
+        const cookies = new Cookies()
+        cookies.set('token', token)
+        this.setState({'token': token})
+    }
+
+    is_authenticated() {
+        return this.state.token != ''
+    }
+
+    logout() {
+        this.set_token('')
+    }
+
+    get_token_from_storage() {
+        const cookies = new Cookies()
+        const token = cookies.get('token')
+        this.setState({'token': token})
     }
 
     load_data(){
@@ -39,11 +61,12 @@ class App extends React.Component {
 
     get_token(username, password) {
         axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password})
-            .then(response => {console.log(response.data)})
+            .then(response => {this.set_token(response.data['token'])})
             .catch(error => alert('Неверный логин или пароль'))
     }
 
     componentDidMount() {
+        this.get_token_from_storage()
         this.load_data()
     }
 
@@ -73,7 +96,8 @@ class App extends React.Component {
                         <p>
                             <ul class="list-unstyled">
                                 <li><Link to='/'>Домашняя</Link></li>
-                                <li><Link to='/login'>Login</Link></li>
+                                <li>{this.is_authenticated() ? <button onClick={()=>this.logout()}>Logout</button>
+                                                                : <Link to='/login'>Login</Link>}</li>
                             </ul>
                         </p>
                         <p><strong>Мы в социальных сетях</strong></p>
