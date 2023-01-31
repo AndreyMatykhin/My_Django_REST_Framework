@@ -23,14 +23,15 @@ class App extends React.Component {
             'users': [],
             'projects':[],
             'TODOs':[],
-            'token':''
+            'token':'',
+            'username':''
         }
     }
 
     set_token(token) {
         const cookies = new Cookies()
         cookies.set('token', token)
-        this.setState({'token': token})
+        this.setState({'token': token}, ()=>this.load_data())
     }
 
     is_authenticated() {
@@ -44,30 +45,42 @@ class App extends React.Component {
     get_token_from_storage() {
         const cookies = new Cookies()
         const token = cookies.get('token')
-        this.setState({'token': token})
+        this.setState({'token': token}, ()=>this.load_data())
     }
 
     load_data(){
-        axios.get('http://127.0.0.1:8000/authapp').then(response => {
+        const headers = this.get_headers()
+        axios.get('http://127.0.0.1:8000/authapp', {headers}).then(response => {
                     this.setState({'users': response.data})
                     }).catch(error => console.log(error))
-        axios.get('http://127.0.0.1:8000/project').then(response => {
+        axios.get('http://127.0.0.1:8000/project', {headers}).then(response => {
                     this.setState({'projects': response.data})
                     }).catch(error => console.log(error))
-        axios.get('http://127.0.0.1:8000/TODO').then(response => {
+        axios.get('http://127.0.0.1:8000/TODO', {headers}).then(response => {
                     this.setState({'TODOs': response.data})
-                    }).catch(error => console.log(error))
+                    }).catch(error => {
+                        console.log(error)
+                        this.setState({'TODOs': []})
+                    })
     }
 
     get_token(username, password) {
         axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password})
-            .then(response => {this.set_token(response.data['token'])})
+            .then(response => {this.set_token(response.data['token'])
+                                this.setState({'username':username})})
             .catch(error => alert('Неверный логин или пароль'))
+    }
+
+    get_headers() {
+        let headers = {'Content-Type': 'application/json'}
+        if (this.is_authenticated()){
+            headers['Authorization'] = 'Token ' + this.state.token
+        }
+        return headers
     }
 
     componentDidMount() {
         this.get_token_from_storage()
-        this.load_data()
     }
 
     render () {
@@ -80,6 +93,8 @@ class App extends React.Component {
                             <li class="nav-item"> <Link to='/projects'>List of Projects</Link></li>
                             <li class="nav-item"> <Link to='/TODO'>list of ToDo</Link></li>
                         </ul>
+                        <p>{this.is_authenticated() ? 'Username: {name}'.replace('{name}',this.state.username)
+                                                    :''}</p>
                     </div>
                     <Switch>
                         <Route exact path='/users' component={()=> <UserList users={this.state.users} /> }/>
