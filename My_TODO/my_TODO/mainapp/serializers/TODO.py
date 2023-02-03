@@ -10,3 +10,9 @@ class TODOSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = TODO
         fields = '__all__'
+
+
+class TODOSerializerBase(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = TODO
+        fields = '__all__'
