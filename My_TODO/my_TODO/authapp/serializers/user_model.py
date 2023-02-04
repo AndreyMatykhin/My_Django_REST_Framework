@@ -27,7 +27,7 @@ class CustomUserModelSerializer(HyperlinkedModelSerializer):
 class CustomUserSerializer(ModelSerializer):
     class Meta:
         model = CustomUser
-        fields = '__all__'
+        exclude = ["user_permissions"]
 
     def create(self, validated_data):
         return CustomUser.objects.create_user(**validated_data)
