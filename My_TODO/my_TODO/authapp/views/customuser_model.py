@@ -8,6 +8,11 @@ class CustomUserViewSet(ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserModelSerializer
 
+    def get_serializer_class(self):
+        if self.request.version == '0.2':
+            return CustomUserSerializer
+        return CustomUserModelSerializer
+
 
 class UserViewSet(mixins.UpdateModelMixin,
                   mixins.ListModelMixin,
