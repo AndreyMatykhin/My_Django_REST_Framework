@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
+    'graphene_django',
     'authapp',
     'corsheaders',
     'mainapp',
@@ -142,3 +143,4 @@ REST_FRAMEWORK = {
     ],
     'DEFAULT_VERSIONING_CLASS': 'rest_framework.versioning.QueryParameterVersioning',
 }
+GRAPHENE = {"SCHEMA": "my_TODO.schema.schema"}
