@@ -51,13 +51,13 @@ class App extends React.Component {
     load_data(){
         const headers = this.get_headers()
         axios.get('http://127.0.0.1:8000/authapp', {headers}).then(response => {
-                    this.setState({'users': response.data})
+                    this.setState({'users': response.data.results})
                     }).catch(error => console.log(error))
         axios.get('http://127.0.0.1:8000/project', {headers}).then(response => {
-                    this.setState({'projects': response.data})
+                    this.setState({'projects': response.data.results})
                     }).catch(error => console.log(error))
         axios.get('http://127.0.0.1:8000/TODO', {headers}).then(response => {
-                    this.setState({'TODOs': response.data})
+                    this.setState({'TODOs': response.data.results})
                     }).catch(error => {
                         console.log(error)
                         this.setState({'TODOs': []})
@@ -83,6 +83,15 @@ class App extends React.Component {
         this.get_token_from_storage()
     }
 
+    deleteProject(url) {
+        const headers = this.get_headers()
+        axios.delete(url, {headers, headers})
+            .then(response => {this.setState({projects: this.state.projects.filter((project)=>project.url !== url)})})
+            .catch(error => console.log(error))
+    }
+
+
+
     render () {
         return (
             <div className='App'>
@@ -98,7 +107,7 @@ class App extends React.Component {
                     </div>
                     <Switch>
                         <Route exact path='/users' component={()=> <UserList users={this.state.users} /> }/>
-                        <Route exact path='/projects' component={()=> <ProjectsList projects={this.state.projects} /> }/>
+                        <Route exact path='/projects' component={()=> <ProjectsList projects={this.state.projects} deleteProject={(id)=>this.deleteProject(id)}/> }/>
                         <Route exact path='/TODO' component={()=> <TODOsList TODOs={this.state.TODOs} /> }/>
                         <Route path='/TODO/:project' component={()=> <TODOsProjectList TODOs={this.state.TODOs} /> }/>
                         <Route exact path='/' component={()=>(<h1>Выберите пункт Меню</h1>)}/>

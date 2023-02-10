@@ -19,7 +19,7 @@ const TODOsList = ({TODOs}) => {
             <th>Create time</th>
             <th>Update time</th>
             <th>Status complete</th>
-            {TODOs.results.map((item) => <TODOItem TODO={item} />)}
+            {TODOs.map((item) => <TODOItem TODO={item} />)}
         </table>
     )
 }
