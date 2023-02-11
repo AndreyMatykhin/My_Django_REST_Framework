@@ -1,5 +1,6 @@
 import React from 'react';
 import UserList from './components/Users.js'
+import ProjectForm from './components/ProjectForm.js'
 import ProjectsList from './components/Projects.js'
 import TODOsList from './components/TODO.js'
 import TODOsProjectList from './components/TODOsProject.js'
@@ -90,7 +91,16 @@ class App extends React.Component {
             .catch(error => console.log(error))
     }
 
-
+    createProject(project_name, users_list) {
+        const headers = this.get_headers()
+        const data = {project_name: project_name, users_list: users_list}
+        axios.post('http://127.0.0.1:8000/project/', data, {headers, headers})
+            .then(response => {let new_project = response.data
+                const list =  this.state.users.filter((items) => users_list.includes(items.url)).map(items => items.username)
+                new_project.users_list = list
+                this.setState({projects: [...this.state.projects, new_project]})})
+            .catch(error => console.log(error))
+    }
 
     render () {
         return (
@@ -107,7 +117,9 @@ class App extends React.Component {
                     </div>
                     <Switch>
                         <Route exact path='/users' component={()=> <UserList users={this.state.users} /> }/>
+                        <Route exact path='/projects/create' component={() => <ProjectForm users={this.state.users} createProject={(project_name, users_list) => this.createProject(project_name, users_list)}/>}                        />
                         <Route exact path='/projects' component={()=> <ProjectsList projects={this.state.projects} deleteProject={(id)=>this.deleteProject(id)}/> }/>
+
                         <Route exact path='/TODO' component={()=> <TODOsList TODOs={this.state.TODOs} /> }/>
                         <Route path='/TODO/:project' component={()=> <TODOsProjectList TODOs={this.state.TODOs} /> }/>
                         <Route exact path='/' component={()=>(<h1>Выберите пункт Меню</h1>)}/>
