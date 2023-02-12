@@ -25,7 +25,9 @@ class TODOForm extends React.Component {
                 </div>
                 <div className="form-group">
                     <label for="Project list">Project list</label>
-                        <select name="project_name" className="form-control" size={this.props.projects.length>3?'3':this.props.projects.length} onChange={(event)=>this.handleChange(event)} >
+                        <select name="project_name" className="form-control"
+                            size={this.props.projects.length>3?'3':this.props.projects.length}
+                            onChange={(event)=>this.handleChange(event)} >
                             {this.props.projects.map((project)=><option value={project.url}>{project.project_name}</option>)}
                         </select>
                 </div>
