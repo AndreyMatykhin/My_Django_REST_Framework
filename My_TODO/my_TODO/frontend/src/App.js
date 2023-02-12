@@ -3,6 +3,8 @@ import UserList from './components/Users.js'
 import ProjectForm from './components/ProjectForm.js'
 import ProjectsList from './components/Projects.js'
 import TODOsList from './components/TODO.js'
+import TODOForm from './components/TODOForm.js'
+
 import TODOsProjectList from './components/TODOsProject.js'
 import LoginForm from './components/Auth.js'
 import {BrowserRouter, Switch, Route, Link} from 'react-router-dom'
@@ -96,12 +98,26 @@ class App extends React.Component {
         const data = {project_name: project_name, users_list: users_list}
         axios.post('http://127.0.0.1:8000/project/', data, {headers, headers})
             .then(response => {let new_project = response.data
-                const list =  this.state.users.filter((items) => users_list.includes(items.url)).map(items => items.username)
-                new_project.users_list = list
+                new_project.users_list =  this.state.users.filter((items) => users_list.includes(items.url)).map(items => items.username)
                 this.setState({projects: [...this.state.projects, new_project]})})
             .catch(error => console.log(error))
     }
-
+    deleteTODO(url) {
+        const headers = this.get_headers()
+        axios.delete(url, {headers, headers})
+            .then(response => {this.setState({TODOs: this.state.projects.filter((TODO)=>TODO.url !== url)})})
+            .catch(error => console.log(error))
+    }
+    createTODO(title, project_name, users_list) {
+        const headers = this.get_headers()
+        const data = {title: title, project_name: project_name, users_list: users_list}
+        axios.post('http://127.0.0.1:8000/TODO/', data, {headers, headers})
+            .then(response => {let new_TODO = response.data
+                new_TODO.project_name = this.state.projects.filter((items) => items.url === project_name)[0].project_name
+                new_TODO.users_list = this.state.users.filter((items) => users_list.includes(items.url)).map(items => items.username)
+                this.setState({TODOs: [...this.state.TODOs, new_TODO]})})
+            .catch(error => console.log(error))
+    }
     render () {
         return (
             <div className='App'>
@@ -117,10 +133,15 @@ class App extends React.Component {
                     </div>
                     <Switch>
                         <Route exact path='/users' component={()=> <UserList users={this.state.users} /> }/>
-                        <Route exact path='/projects/create' component={() => <ProjectForm users={this.state.users} createProject={(project_name, users_list) => this.createProject(project_name, users_list)}/>}                        />
-                        <Route exact path='/projects' component={()=> <ProjectsList projects={this.state.projects} deleteProject={(id)=>this.deleteProject(id)}/> }/>
-
-                        <Route exact path='/TODO' component={()=> <TODOsList TODOs={this.state.TODOs} /> }/>
+                        <Route exact path='/projects/create' component={() => <ProjectForm users={this.state.users}
+                            createProject={(project_name, users_list) => this.createProject(project_name, users_list)}/>}/>
+                        <Route exact path='/projects' component={()=> <ProjectsList projects={this.state.projects}
+                            deleteProject={(url)=>this.deleteProject(url)}/> }/>
+                        <Route exact path='/TODO/create' component={() => <TODOForm users={this.state.users}
+                            projects={this.state.projects}
+                            createTODO={(title,project_name, users_list) => this.createTODO(title, project_name, users_list)}/>}/>
+                        <Route exact path='/TODO' component={()=> <TODOsList TODOs={this.state.TODOs}
+                            deleteTODO={(url)=>this.deleteTODO(url)}/> }/>
                         <Route path='/TODO/:project' component={()=> <TODOsProjectList TODOs={this.state.TODOs} /> }/>
                         <Route exact path='/' component={()=>(<h1>Выберите пункт Меню</h1>)}/>
                         <Route exact path='/login' component={() => <LoginForm get_token={(username, password) =>
