@@ -20,7 +20,7 @@ services:
       && python manage.py migrate
       && python manage.py crsu
       && python manage.py defaltusers 7
-      && python manage.py runserver 0.0.0.0:8080
+      && gunicorn my_TODO.wsgi -b 0.0.0.0:8080
       "
     depends_on:
       - db
