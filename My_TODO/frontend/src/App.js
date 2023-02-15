@@ -53,13 +53,13 @@ class App extends React.Component {
 
     load_data(){
         const headers = this.get_headers()
-        axios.get('http://127.0.0.1:8000/authapp', {headers}).then(response => {
+        axios.get('http://185.46.11.129:8000/authapp', {headers}).then(response => {
                     this.setState({'users': response.data.results})
                     }).catch(error => console.log(error))
-        axios.get('http://127.0.0.1:8000/project', {headers}).then(response => {
+        axios.get('http://185.46.11.129:8000/project', {headers}).then(response => {
                     this.setState({'projects': response.data.results})
                     }).catch(error => console.log(error))
-        axios.get('http://127.0.0.1:8000/TODO', {headers}).then(response => {
+        axios.get('http://185.46.11.129:8000/TODO', {headers}).then(response => {
                     this.setState({'TODOs': response.data.results})
                     }).catch(error => {
                         console.log(error)
@@ -68,7 +68,7 @@ class App extends React.Component {
     }
 
     get_token(username, password) {
-        axios.post('http://127.0.0.1:8000/api-token-auth/', {username: username, password: password})
+        axios.post('http://185.46.11.129:8000/api-token-auth/', {username: username, password: password})
             .then(response => {this.set_token(response.data['token'])
                                 this.setState({'username':username})})
             .catch(error => alert('Неверный логин или пароль'))
@@ -96,7 +96,7 @@ class App extends React.Component {
     createProject(project_name, users_list) {
         const headers = this.get_headers()
         const data = {project_name: project_name, users_list: users_list}
-        axios.post('http://127.0.0.1:8000/project/', data, {headers, headers})
+        axios.post('http://185.46.11.129:8000/project/', data, {headers, headers})
             .then(response => {let new_project = response.data
                 new_project.users_list =  this.state.users.filter((items) => users_list.includes(items.url)).map(items => items.username)
                 this.setState({projects: [...this.state.projects, new_project]})})
@@ -111,7 +111,7 @@ class App extends React.Component {
     createTODO(title, project_name, users_list) {
         const headers = this.get_headers()
         const data = {title: title, project_name: project_name, users_list: users_list}
-        axios.post('http://127.0.0.1:8000/TODO/', data, {headers, headers})
+        axios.post('http://185.46.11.129:8000/TODO/', data, {headers, headers})
             .then(response => {let new_TODO = response.data
                 new_TODO.project_name = this.state.projects.filter((items) => items.url === project_name)[0].project_name
                 new_TODO.users_list = this.state.users.filter((items) => users_list.includes(items.url)).map(items => items.username)
