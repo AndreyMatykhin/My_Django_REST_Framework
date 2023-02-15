@@ -13,14 +13,20 @@ services:
   backend:
     build:
       context: .
-    ports:
-      - 8080:8080
+    expose:
+      - 8080
     command: bash -c "
       ./wait-for-postgres.sh db
       && python manage.py migrate
-      && python manage.py crsu
+      && python manage.py csu
       && python manage.py defaltusers 7
       && gunicorn my_TODO.wsgi -b 0.0.0.0:8080
       "
     depends_on:
       - db
+  nginx:
+    build: ./nginx
+    ports:
+      - 8000:80
+    depends_on:
+      - backend
